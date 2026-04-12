@@ -1,5 +1,6 @@
 [package]
 name = "hadrone-wasm"
+publish = false
 version = "0.1.0"
 edition = "2021"
 description = "WASM bindings for hadrone engine (JS interop)"
