@@ -107,15 +107,7 @@ impl InteractionSession {
                     }
                 }
 
-                engine.resize_element(
-                    layout,
-                    &self.id,
-                    nx,
-                    ny,
-                    nw,
-                    nh,
-                    Some(self.handle),
-                );
+                engine.resize_element(layout, &self.id, nx, ny, nw, nh, Some(self.handle));
             }
         }
     }

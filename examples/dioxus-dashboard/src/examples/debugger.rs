@@ -1,10 +1,10 @@
+use crate::grid_helpers::*;
 use dioxus::prelude::*;
 use hadrone_core::{CompactionType, LayoutItem, ResizeHandle};
 use hadrone_dioxus::GridLayout;
 use hadrone_extras::{FileStorage, LayoutSnapshot, LayoutStorage};
 use std::collections::HashSet;
 use std::rc::Rc;
-use crate::grid_helpers::*;
 
 pub const RSX_CODE: &str = r#"GridLayout {
     layout,
@@ -21,7 +21,7 @@ fn default_layout() -> Vec<LayoutItem> {
     handles.insert(ResizeHandle::SouthEast);
     handles.insert(ResizeHandle::South);
     handles.insert(ResizeHandle::East);
-    
+
     vec![
         LayoutItem {
             id: "weather".into(),
@@ -59,7 +59,7 @@ pub fn DebuggerExample() -> Element {
     let mut layout = use_signal(|| default_layout());
     let mut cols = use_signal(|| 12);
     let storage = Rc::new(FileStorage::new("./storage"));
-    
+
     let storage_load = storage.clone();
     use_effect(move || {
         if let Ok(Some(snapshot)) = storage_load.load("dashboard_v2") {
@@ -69,14 +69,14 @@ pub fn DebuggerExample() -> Element {
             }
         }
     });
-    
+
     let storage_save = storage.clone();
-    
+
     let on_reset = move |_| {
         layout.set(default_layout());
         cols.set(12);
     };
-    
+
     rsx! {
         div { class: "example-content",
             ExampleHeader {
@@ -87,7 +87,7 @@ pub fn DebuggerExample() -> Element {
                 show_reset: true,
                 on_reset: EventHandler::new(on_reset),
             }
-            
+
             ExampleControls {
                 ControlGroup { label: "Columns",
                     input {
@@ -103,7 +103,7 @@ pub fn DebuggerExample() -> Element {
                     }
                     span { style: "font-size: 12px; color: #64748b;", "{cols()} cols" }
                 }
-                
+
                 ControlGroup { label: "Actions",
                     ControlButton {
                         label: "Save Layout",
@@ -118,7 +118,7 @@ pub fn DebuggerExample() -> Element {
                     }
                 }
             }
-            
+
             div { style: "background: white; border-radius: 16px; padding: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);",
                 GridLayout {
                     layout,
@@ -131,7 +131,7 @@ pub fn DebuggerExample() -> Element {
                     on_layout_change: move |_| {}
                 }
             }
-            
+
             div { style: "margin-top: 24px; padding: 16px; background: #fef3c7; border-radius: 12px; border: 1px solid #f59e0b;",
                 strong { style: "color: #92400e;", "Tip: " }
                 span { style: "color: #78350f;", "Drag and resize widgets to rearrange the dashboard. The analytics widget has aspect ratio locking (1.5:1)." }

@@ -1,7 +1,7 @@
 //! Structured layout lifecycle events (RGL-style callbacks).
 
 use crate::interaction::InteractionType;
-use crate::{CompactionType, CollisionStrategy, LayoutItem};
+use crate::{CollisionStrategy, CompactionType, LayoutItem};
 
 /// Phase of a drag or resize interaction.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]

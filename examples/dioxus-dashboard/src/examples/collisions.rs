@@ -1,8 +1,8 @@
+use crate::grid_helpers::*;
 use dioxus::prelude::*;
 use hadrone_core::{CompactionType, LayoutItem, ResizeHandle};
 use hadrone_dioxus::GridLayout;
 use std::collections::HashSet;
-use crate::grid_helpers::*;
 
 pub const RSX_CODE: &str = r#"GridLayout {
     layout,
@@ -31,20 +31,60 @@ fn get_collision_color(id: &str) -> &'static str {
 fn default_layout() -> Vec<LayoutItem> {
     let mut handles = HashSet::new();
     handles.insert(ResizeHandle::SouthEast);
-    
+
     vec![
-        LayoutItem { id: "A".into(), x: 0, y: 0, w: 3, h: 3, resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "B".into(), x: 3, y: 0, w: 3, h: 3, resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "C".into(), x: 6, y: 0, w: 3, h: 3, resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "D".into(), x: 0, y: 3, w: 4, h: 2, resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "E".into(), x: 4, y: 3, w: 4, h: 2, resize_handles: handles.clone(), ..Default::default() },
+        LayoutItem {
+            id: "A".into(),
+            x: 0,
+            y: 0,
+            w: 3,
+            h: 3,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "B".into(),
+            x: 3,
+            y: 0,
+            w: 3,
+            h: 3,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "C".into(),
+            x: 6,
+            y: 0,
+            w: 3,
+            h: 3,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "D".into(),
+            x: 0,
+            y: 3,
+            w: 4,
+            h: 2,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "E".into(),
+            x: 4,
+            y: 3,
+            w: 4,
+            h: 2,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
     ]
 }
 
 #[component]
 pub fn CollisionsExample() -> Element {
     let layout = use_signal(|| default_layout());
-    
+
     rsx! {
         div { class: "example-content",
             ExampleHeader {
@@ -54,12 +94,12 @@ pub fn CollisionsExample() -> Element {
                 code: Some(RSX_CODE),
                 show_reset: false,
             }
-            
+
             div { style: "margin-bottom: 24px; padding: 16px; background: #fce7f3; border-radius: 12px; border: 1px solid #ec4899;",
                 strong { style: "color: #be185d;", "Collision Detection: " }
                 span { style: "color: #831843;", "When you drag an item over another, the engine detects the collision and prevents overlap." }
             }
-            
+
             div { style: "background: white; border-radius: 16px; padding: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);",
                 GridLayout {
                     layout,

@@ -1,8 +1,8 @@
+use crate::grid_helpers::*;
 use dioxus::prelude::*;
 use hadrone_core::{CompactionType, LayoutItem, ResizeHandle};
 use hadrone_dioxus::GridLayout;
 use std::collections::HashSet;
-use crate::grid_helpers::*;
 
 pub const RSX_CODE: &str = r#"LayoutItem {
     id: "16:9 Video".into(),
@@ -54,20 +54,64 @@ fn default_layout() -> Vec<LayoutItem> {
     handles.insert(ResizeHandle::SouthEast);
     handles.insert(ResizeHandle::South);
     handles.insert(ResizeHandle::East);
-    
+
     vec![
-        LayoutItem { id: "16:9 Video".into(), x: 0, y: 0, w: 4, h: 3, resize_handles: handles.clone(), aspect_ratio: Some(16.0 / 9.0), ..Default::default() },
-        LayoutItem { id: "1:1 Square".into(), x: 4, y: 0, w: 3, h: 3, resize_handles: handles.clone(), aspect_ratio: Some(1.0), ..Default::default() },
-        LayoutItem { id: "4:3 Photo".into(), x: 7, y: 0, w: 3, h: 4, resize_handles: handles.clone(), aspect_ratio: Some(4.0 / 3.0), ..Default::default() },
-        LayoutItem { id: "2:1 Banner".into(), x: 0, y: 3, w: 4, h: 3, resize_handles: handles.clone(), aspect_ratio: Some(2.0), ..Default::default() },
-        LayoutItem { id: "Unconstrained".into(), x: 4, y: 3, w: 3, h: 3, resize_handles: handles.clone(), ..Default::default() },
+        LayoutItem {
+            id: "16:9 Video".into(),
+            x: 0,
+            y: 0,
+            w: 4,
+            h: 3,
+            resize_handles: handles.clone(),
+            aspect_ratio: Some(16.0 / 9.0),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "1:1 Square".into(),
+            x: 4,
+            y: 0,
+            w: 3,
+            h: 3,
+            resize_handles: handles.clone(),
+            aspect_ratio: Some(1.0),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "4:3 Photo".into(),
+            x: 7,
+            y: 0,
+            w: 3,
+            h: 4,
+            resize_handles: handles.clone(),
+            aspect_ratio: Some(4.0 / 3.0),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "2:1 Banner".into(),
+            x: 0,
+            y: 3,
+            w: 4,
+            h: 3,
+            resize_handles: handles.clone(),
+            aspect_ratio: Some(2.0),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "Unconstrained".into(),
+            x: 4,
+            y: 3,
+            w: 3,
+            h: 3,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
     ]
 }
 
 #[component]
 pub fn AspectRatioExample() -> Element {
     let layout = use_signal(|| default_layout());
-    
+
     rsx! {
         div { class: "example-content",
             ExampleHeader {
@@ -77,12 +121,12 @@ pub fn AspectRatioExample() -> Element {
                 code: Some(RSX_CODE),
                 show_reset: false,
             }
-            
+
             div { style: "margin-bottom: 24px; padding: 16px; background: #fef3c7; border-radius: 12px; border: 1px solid #f59e0b;",
                 strong { style: "color: #92400e;", "Aspect Ratio Lock: " }
                 span { style: "color: #78350f;", "Each colored widget has a different aspect ratio constraint." }
             }
-            
+
             div { style: "background: white; border-radius: 16px; padding: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);",
                 GridLayout {
                     layout,

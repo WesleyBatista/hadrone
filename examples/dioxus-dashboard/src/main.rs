@@ -1,39 +1,39 @@
-use dioxus::prelude::*;
-use ui::HadroneDashboardStylesheet;
-use sidebar::{Sidebar, SidebarItem};
 use crate::examples::*;
+use dioxus::prelude::*;
+use sidebar::{Sidebar, SidebarItem};
+use ui::HadroneDashboardStylesheet;
 
-mod sidebar;
-mod grid_helpers;
 mod examples;
+mod grid_helpers;
+mod sidebar;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 enum Route {
     #[layout(MainLayout)]
     #[route("/")]
     Debugger {},
-    
+
     #[route("/basic")]
     Basic {},
-    
+
     #[route("/no-dragging")]
     NoDragging {},
-    
+
     #[route("/dynamic-add-remove")]
     DynamicAddRemove {},
-    
+
     #[route("/gravity")]
     Gravity {},
-    
+
     #[route("/aspect-ratio")]
     AspectRatio {},
-    
+
     #[route("/min-max")]
     MinMax {},
-    
+
     #[route("/collisions")]
     Collisions {},
-    
+
     #[route("/responsive")]
     Responsive {},
 }
@@ -54,7 +54,7 @@ fn App() -> Element {
 fn MainLayout() -> Element {
     let mut sidebar_open = use_signal(|| false);
     let route = use_route::<Route>();
-    
+
     let route_str = match route {
         Route::Debugger {} => "/".to_string(),
         Route::Basic {} => "/basic".to_string(),
@@ -66,7 +66,7 @@ fn MainLayout() -> Element {
         Route::Collisions {} => "/collisions".to_string(),
         Route::Responsive {} => "/responsive".to_string(),
     };
-    
+
     let sidebar_items = vec![
         SidebarItem {
             icon: "⚡",
@@ -143,7 +143,7 @@ fn MainLayout() -> Element {
                 is_open: sidebar_open(),
                 on_toggle: move |_| sidebar_open.toggle()
             }
-            
+
             div { class: "main-content",
                 Outlet::<Route> {}
             }

@@ -1,8 +1,8 @@
+use crate::grid_helpers::*;
 use dioxus::prelude::*;
 use hadrone_core::{CompactionType, LayoutItem, ResizeHandle};
 use hadrone_dioxus::GridLayout;
 use std::collections::HashSet;
-use crate::grid_helpers::*;
 
 pub const RSX_CODE: &str = r#"LayoutItem {
     id: "minW: 2".into(),
@@ -44,20 +44,68 @@ fn get_minmax_color(id: &str) -> (&'static str, &'static str) {
 fn default_layout() -> Vec<LayoutItem> {
     let mut handles = HashSet::new();
     handles.insert(ResizeHandle::SouthEast);
-    
+
     vec![
-        LayoutItem { id: "minW: 2".into(), x: 0, y: 0, w: 3, h: 2, min_w: Some(2), resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "maxW: 4".into(), x: 3, y: 0, w: 3, h: 2, max_w: Some(4), resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "minH: 3".into(), x: 6, y: 0, w: 3, h: 3, min_h: Some(3), resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "maxH: 2".into(), x: 9, y: 0, w: 3, h: 2, max_h: Some(2), resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "All Constraints".into(), x: 0, y: 2, w: 4, h: 3, min_w: Some(2), max_w: Some(6), min_h: Some(2), max_h: Some(4), resize_handles: handles.clone(), ..Default::default() },
+        LayoutItem {
+            id: "minW: 2".into(),
+            x: 0,
+            y: 0,
+            w: 3,
+            h: 2,
+            min_w: Some(2),
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "maxW: 4".into(),
+            x: 3,
+            y: 0,
+            w: 3,
+            h: 2,
+            max_w: Some(4),
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "minH: 3".into(),
+            x: 6,
+            y: 0,
+            w: 3,
+            h: 3,
+            min_h: Some(3),
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "maxH: 2".into(),
+            x: 9,
+            y: 0,
+            w: 3,
+            h: 2,
+            max_h: Some(2),
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "All Constraints".into(),
+            x: 0,
+            y: 2,
+            w: 4,
+            h: 3,
+            min_w: Some(2),
+            max_w: Some(6),
+            min_h: Some(2),
+            max_h: Some(4),
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
     ]
 }
 
 #[component]
 pub fn MinMaxExample() -> Element {
     let layout = use_signal(|| default_layout());
-    
+
     rsx! {
         div { class: "example-content",
             ExampleHeader {
@@ -67,12 +115,12 @@ pub fn MinMaxExample() -> Element {
                 code: Some(RSX_CODE),
                 show_reset: false,
             }
-            
+
             div { style: "margin-bottom: 24px; padding: 16px; background: #e0e7ff; border-radius: 12px; border: 1px solid #6366f1;",
                 strong { style: "color: #4338ca;", "Size Constraints: " }
                 span { style: "color: #3730a3;", "Each widget has different min/max constraints. Resize them to feel the limits." }
             }
-            
+
             div { style: "background: white; border-radius: 16px; padding: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);",
                 GridLayout {
                     layout,

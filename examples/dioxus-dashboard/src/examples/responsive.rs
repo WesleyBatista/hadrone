@@ -1,8 +1,8 @@
+use crate::grid_helpers::*;
 use dioxus::prelude::*;
 use hadrone_core::{LayoutItem, ResizeHandle};
 use hadrone_dioxus::GridLayout;
 use std::collections::HashSet;
-use crate::grid_helpers::*;
 
 pub const RSX_CODE: &str = r#"GridLayout {
     layout,
@@ -30,13 +30,53 @@ fn get_responsive_color(id: &str) -> &'static str {
 fn default_layout() -> Vec<LayoutItem> {
     let mut handles = HashSet::new();
     handles.insert(ResizeHandle::SouthEast);
-    
+
     vec![
-        LayoutItem { id: "Header".into(), x: 0, y: 0, w: 12, h: 1, resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "Sidebar".into(), x: 0, y: 1, w: 3, h: 4, resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "Main".into(), x: 3, y: 1, w: 6, h: 4, resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "Aside".into(), x: 9, y: 1, w: 3, h: 4, resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "Footer".into(), x: 0, y: 5, w: 12, h: 1, resize_handles: handles.clone(), ..Default::default() },
+        LayoutItem {
+            id: "Header".into(),
+            x: 0,
+            y: 0,
+            w: 12,
+            h: 1,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "Sidebar".into(),
+            x: 0,
+            y: 1,
+            w: 3,
+            h: 4,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "Main".into(),
+            x: 3,
+            y: 1,
+            w: 6,
+            h: 4,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "Aside".into(),
+            x: 9,
+            y: 1,
+            w: 3,
+            h: 4,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "Footer".into(),
+            x: 0,
+            y: 5,
+            w: 12,
+            h: 1,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
     ]
 }
 
@@ -44,26 +84,50 @@ fn default_layout() -> Vec<LayoutItem> {
 pub fn ResponsiveExample() -> Element {
     let mut cols = use_signal(|| 12);
     let layout = use_signal(|| default_layout());
-    
+
     let current_cols = cols();
-    
-    let size_label = if current_cols >= 12 { 
-        "Desktop (12 cols)" 
-    } else if current_cols >= 8 { 
-        "Laptop (10 cols)" 
-    } else if current_cols >= 6 { 
-        "Tablet (6 cols)" 
-    } else { 
-        "Mobile (4 cols)" 
+
+    let size_label = if current_cols >= 12 {
+        "Desktop (12 cols)"
+    } else if current_cols >= 8 {
+        "Laptop (10 cols)"
+    } else if current_cols >= 6 {
+        "Tablet (6 cols)"
+    } else {
+        "Mobile (4 cols)"
     };
-    
-    let desktop_bg = if current_cols == 12 { "#3b82f6" } else { "#e2e8f0" };
-    let desktop_color = if current_cols == 12 { "white" } else { "#64748b" };
-    let tablet_bg = if current_cols == 6 { "#3b82f6" } else { "#e2e8f0" };
-    let tablet_color = if current_cols == 6 { "white" } else { "#64748b" };
-    let mobile_bg = if current_cols == 4 { "#3b82f6" } else { "#e2e8f0" };
-    let mobile_color = if current_cols == 4 { "white" } else { "#64748b" };
-    
+
+    let desktop_bg = if current_cols == 12 {
+        "#3b82f6"
+    } else {
+        "#e2e8f0"
+    };
+    let desktop_color = if current_cols == 12 {
+        "white"
+    } else {
+        "#64748b"
+    };
+    let tablet_bg = if current_cols == 6 {
+        "#3b82f6"
+    } else {
+        "#e2e8f0"
+    };
+    let tablet_color = if current_cols == 6 {
+        "white"
+    } else {
+        "#64748b"
+    };
+    let mobile_bg = if current_cols == 4 {
+        "#3b82f6"
+    } else {
+        "#e2e8f0"
+    };
+    let mobile_color = if current_cols == 4 {
+        "white"
+    } else {
+        "#64748b"
+    };
+
     rsx! {
         div { class: "example-content",
             ExampleHeader {
@@ -73,7 +137,7 @@ pub fn ResponsiveExample() -> Element {
                 code: Some(RSX_CODE),
                 show_reset: false,
             }
-            
+
             div { class: "example-controls",
                 div { class: "example-controls__group",
                     label { class: "example-controls__label", "Columns (Screen Size)" }
@@ -91,7 +155,7 @@ pub fn ResponsiveExample() -> Element {
                     span { style: "font-size: 12px; color: #64748b;", "{size_label}" }
                 }
             }
-            
+
             div { style: "background: white; border-radius: 16px; padding: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);",
                 GridLayout {
                     layout,
@@ -111,7 +175,7 @@ pub fn ResponsiveExample() -> Element {
                     on_layout_change: move |_| {}
                 }
             }
-            
+
             div { style: "margin-top: 16px; display: flex; gap: 8px;",
                 button {
                     style: "padding: 8px 16px; background: {desktop_bg}; color: {desktop_color}; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600;",

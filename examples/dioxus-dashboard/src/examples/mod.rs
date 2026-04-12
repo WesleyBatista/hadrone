@@ -31,16 +31,14 @@ pub fn default_resize_handles() -> HashSet<hadrone_core::ResizeHandle> {
 
 pub fn generate_random_layout(count: usize, cols: i32) -> Vec<LayoutItem> {
     (0..count)
-        .map(|i| {
-            LayoutItem {
-                id: format!("item-{}", i),
-                x: (i as i32 * 2) % cols,
-                y: ((i / 6) as i32) * 2,
-                w: 2,
-                h: 2,
-                resize_handles: default_resize_handles(),
-                ..Default::default()
-            }
+        .map(|i| LayoutItem {
+            id: format!("item-{}", i),
+            x: (i as i32 * 2) % cols,
+            y: ((i / 6) as i32) * 2,
+            w: 2,
+            h: 2,
+            resize_handles: default_resize_handles(),
+            ..Default::default()
         })
         .collect()
 }

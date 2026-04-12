@@ -7,12 +7,36 @@ use std::collections::HashMap;
 /// Issues found by [`validate_layout`].
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum LayoutIssue {
-    DuplicateId { id: String },
-    NonPositiveSize { id: String, w: i32, h: i32 },
-    OutOfHorizontalBounds { id: String, x: i32, w: i32, cols: i32 },
-    MinMaxWidth { id: String, w: i32, min_w: Option<i32>, max_w: Option<i32> },
-    MinMaxHeight { id: String, h: i32, min_h: Option<i32>, max_h: Option<i32> },
-    Overlap { a: String, b: String },
+    DuplicateId {
+        id: String,
+    },
+    NonPositiveSize {
+        id: String,
+        w: i32,
+        h: i32,
+    },
+    OutOfHorizontalBounds {
+        id: String,
+        x: i32,
+        w: i32,
+        cols: i32,
+    },
+    MinMaxWidth {
+        id: String,
+        w: i32,
+        min_w: Option<i32>,
+        max_w: Option<i32>,
+    },
+    MinMaxHeight {
+        id: String,
+        h: i32,
+        min_h: Option<i32>,
+        max_h: Option<i32>,
+    },
+    Overlap {
+        a: String,
+        b: String,
+    },
 }
 
 /// Full validation pass (does not mutate).

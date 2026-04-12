@@ -1,8 +1,8 @@
+use crate::examples::generate_random_layout;
+use crate::grid_helpers::*;
 use dioxus::prelude::*;
 use hadrone_core::{CompactionType, LayoutItem};
 use hadrone_dioxus::GridLayout;
-use crate::examples::generate_random_layout;
-use crate::grid_helpers::*;
 
 const GRADIENT_COLORS: [(&str, &str); 6] = [
     ("#667eea", "#764ba2"),
@@ -27,12 +27,12 @@ fn default_layout() -> Vec<LayoutItem> {
 pub fn BasicExample() -> Element {
     let mut layout = use_signal(|| default_layout());
     let mut cols = use_signal(|| 12);
-    
+
     let on_reset = move |_| {
         layout.set(default_layout());
         cols.set(12);
     };
-    
+
     rsx! {
         div { class: "example-content",
             ExampleHeader {
@@ -50,7 +50,7 @@ pub fn BasicExample() -> Element {
                 show_reset: true,
                 on_reset: EventHandler::new(on_reset),
             }
-            
+
             ExampleControls {
                 ControlGroup { label: "Columns",
                     input {
@@ -66,7 +66,7 @@ pub fn BasicExample() -> Element {
                     }
                     span { style: "font-size: 12px; color: #64748b;", "{cols()} cols" }
                 }
-                
+
                 ControlGroup { label: "Actions",
                     button {
                         class: "example-controls__btn",
@@ -77,7 +77,7 @@ pub fn BasicExample() -> Element {
                     }
                 }
             }
-            
+
             div { style: "background: white; border-radius: 16px; padding: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);",
                 GridLayout {
                     layout,

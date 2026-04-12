@@ -1,8 +1,8 @@
+use crate::grid_helpers::*;
 use dioxus::prelude::*;
 use hadrone_core::{CompactionType, LayoutItem, ResizeHandle};
 use hadrone_dioxus::GridLayout;
 use std::collections::HashSet;
-use crate::grid_helpers::*;
 
 pub const RSX_CODE: &str = r#"GridLayout {
     layout,
@@ -28,19 +28,51 @@ fn get_color(id: &str) -> &'static str {
 fn default_layout() -> Vec<LayoutItem> {
     let mut handles = HashSet::new();
     handles.insert(ResizeHandle::SouthEast);
-    
+
     vec![
-        LayoutItem { id: "A".into(), x: 0, y: 0, w: 4, h: 2, resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "B".into(), x: 4, y: 0, w: 4, h: 3, resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "C".into(), x: 0, y: 2, w: 4, h: 2, resize_handles: handles.clone(), ..Default::default() },
-        LayoutItem { id: "D".into(), x: 8, y: 0, w: 4, h: 2, resize_handles: handles.clone(), ..Default::default() },
+        LayoutItem {
+            id: "A".into(),
+            x: 0,
+            y: 0,
+            w: 4,
+            h: 2,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "B".into(),
+            x: 4,
+            y: 0,
+            w: 4,
+            h: 3,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "C".into(),
+            x: 0,
+            y: 2,
+            w: 4,
+            h: 2,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
+        LayoutItem {
+            id: "D".into(),
+            x: 8,
+            y: 0,
+            w: 4,
+            h: 2,
+            resize_handles: handles.clone(),
+            ..Default::default()
+        },
     ]
 }
 
 #[component]
 pub fn GravityExample() -> Element {
     let layout = use_signal(|| default_layout());
-    
+
     rsx! {
         div { class: "example-content",
             ExampleHeader {
@@ -50,12 +82,12 @@ pub fn GravityExample() -> Element {
                 code: Some(RSX_CODE),
                 show_reset: false,
             }
-            
+
             div { style: "margin-bottom: 24px; padding: 16px; background: #d1fae5; border-radius: 12px; border: 1px solid #10b981;",
                 strong { style: "color: #047857;", "Gravity Active: " }
                 span { style: "color: #065f46;", "Items automatically compact vertically. Move items to create gaps and watch them fall." }
             }
-            
+
             div { style: "background: white; border-radius: 16px; padding: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);",
                 GridLayout {
                     layout,

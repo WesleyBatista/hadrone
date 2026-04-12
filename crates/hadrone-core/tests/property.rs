@@ -7,16 +7,21 @@ use hadrone_core::{
 use proptest::prelude::*;
 
 fn layout_item_strategy() -> impl Strategy<Value = LayoutItem> {
-    (any::<u16>(), 0i32..8i32, 0i32..20i32, 1i32..5i32, 1i32..6i32).prop_map(
-        |(id, x, y, w, h)| LayoutItem {
+    (
+        any::<u16>(),
+        0i32..8i32,
+        0i32..20i32,
+        1i32..5i32,
+        1i32..6i32,
+    )
+        .prop_map(|(id, x, y, w, h)| LayoutItem {
             id: format!("i-{id}"),
             x,
             y,
             w,
             h,
             ..Default::default()
-        },
-    )
+        })
 }
 
 proptest! {

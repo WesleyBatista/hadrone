@@ -17,7 +17,8 @@ pub fn Sidebar(
     on_toggle: EventHandler<MouseEvent>,
 ) -> Element {
     let main_items: Vec<SidebarItem> = items.iter().filter(|i| i.route == "/").cloned().collect();
-    let feature_items: Vec<SidebarItem> = items.iter().filter(|i| i.route != "/").cloned().collect();
+    let feature_items: Vec<SidebarItem> =
+        items.iter().filter(|i| i.route != "/").cloned().collect();
 
     rsx! {
         button {
@@ -27,7 +28,7 @@ pub fn Sidebar(
             aria_controls: "sidebar",
             "☰"
         }
-        
+
         if is_open {
             div {
                 class: "sidebar-overlay sidebar-overlay--visible",
@@ -35,13 +36,13 @@ pub fn Sidebar(
                 role: "presentation"
             }
         }
-        
+
         nav {
             id: "sidebar",
             role: "navigation",
             aria_hidden: !is_open,
             class: if is_open { "sidebar sidebar--open" } else { "sidebar" },
-            
+
             div { class: "sidebar__header",
                 div { class: "sidebar__title",
                     span { "⚡" }
@@ -49,10 +50,10 @@ pub fn Sidebar(
                 }
                 div { class: "sidebar__subtitle", "Grid Engine Debugger" }
             }
-            
+
             div { class: "sidebar__nav",
                 div { class: "sidebar__section", "Main Demo" }
-                
+
                 for item in main_items.iter() {
                     SidebarNavItem {
                         item: item.clone(),
@@ -60,10 +61,10 @@ pub fn Sidebar(
                         on_toggle: on_toggle.clone()
                     }
                 }
-                
+
                 if !feature_items.is_empty() {
                     div { class: "sidebar__section", "Features" }
-                    
+
                     for item in feature_items.iter() {
                         SidebarNavItem {
                             item: item.clone(),
@@ -73,7 +74,7 @@ pub fn Sidebar(
                     }
                 }
             }
-            
+
             div { class: "sidebar__footer",
                 "Powered by "
                 a { href: "https://github.com/anomalyco/hadrone", "Hadrone Core" }

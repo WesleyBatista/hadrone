@@ -10,7 +10,9 @@ pub mod interaction;
 pub mod responsive;
 pub mod validate;
 
-pub use collision::{CollisionResolver, CollisionStrategy, NoopCollisionResolver, PushDownResolver};
+pub use collision::{
+    CollisionResolver, CollisionStrategy, NoopCollisionResolver, PushDownResolver,
+};
 pub use events::{InteractionPhase, LayoutEvent};
 pub use responsive::{BreakpointSpec, scale_layout_cols, select_breakpoint};
 pub use validate::{LayoutIssue, repair_layout, validate_layout};
@@ -546,6 +548,9 @@ mod tests {
             },
         ];
         let err = validate_layout(&layout, 12).unwrap_err();
-        assert!(err.iter().any(|e| matches!(e, LayoutIssue::DuplicateId { .. })));
+        assert!(
+            err.iter()
+                .any(|e| matches!(e, LayoutIssue::DuplicateId { .. }))
+        );
     }
 }
