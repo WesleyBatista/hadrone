@@ -1,0 +1,30 @@
+changelog:
+  categories:
+    - title: "🚀 New Features"
+      labels:
+        - "feat"
+        - "feature"
+        - "enhancement"
+    - title: "🐛 Bug Fixes"
+      labels:
+        - "bug"
+        - "fix"
+        - "hotfix"
+    - title: "🛡️ Security"
+      labels:
+        - "security"
+    - title: "🛡️ Internal Improvements"
+      labels:
+        - "internal"
+        - "refactor"
+        - "dependencies"
+        - "chore"
+    - title: "📚 Documentation"
+      labels:
+        - "doc"
+        - "documentation"
+  exclude:
+    labels:
+      - "skip-changelog"
+    authors:
+      - "dependabot"
