@@ -12,7 +12,7 @@ categories = ["rendering", "web-programming"]
 
 [dependencies]
 yew = { version = "0.21", features = ["csr"] }
-hadrone-core = { path = "../hadrone-core" }
+hadrone-core = "0.1.0"
 gloo-events = "0.2"
 web-sys = { version = "0.3", features = [
     "Window",
