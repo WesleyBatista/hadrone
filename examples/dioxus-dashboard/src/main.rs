@@ -125,8 +125,7 @@ fn MainLayout() -> Element {
     ];
     // Auto-close sidebar on route change for small screens
     {
-        let mut sidebar_open = sidebar_open.clone();
-        let _route = route.clone();
+        let mut sidebar_open = sidebar_open;
         use_effect(move || {
             // Close the sidebar when the route changes (helps mobile drawer UX).
             if sidebar_open() {

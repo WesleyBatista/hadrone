@@ -56,7 +56,7 @@ fn default_layout() -> Vec<LayoutItem> {
 
 #[component]
 pub fn DebuggerExample() -> Element {
-    let mut layout = use_signal(|| default_layout());
+    let mut layout = use_signal(default_layout);
     let mut cols = use_signal(|| 12);
     let storage = Rc::new(FileStorage::new("./storage"));
 

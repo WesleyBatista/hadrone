@@ -1,8 +1,13 @@
+# Specify types that should not be held across an .await point to prevent deadlocks and broken borrows.
 await-holding-invalid-types = [
-  "generational_box::GenerationalRef",
-  { path = "generational_box::GenerationalRef", reason = "Reads should not be held over an await point. This will cause any writes to fail while the await is pending since the read borrow is still active." },
-  "generational_box::GenerationalRefMut",
-  { path = "generational_box::GenerationalRefMut", reason = "Write should not be held over an await point. This will cause any reads or writes to fail while the await is pending since the write borrow is still active." },
-  "dioxus_signals::WriteLock",
-  { path = "dioxus_signals::WriteLock", reason = "Write should not be held over an await point. This will cause any reads or writes to fail while the await is pending since the write borrow is still active." },
+  { path = "generational_box::GenerationalRef", reason = "Read borrows (returned by Signal::read()) should not be held over an await point. This will cause any subsequent writes to fail while the await is pending." },
+  { path = "generational_box::GenerationalRefMut", reason = "Write borrows (returned by Signal::write()) should not be held over an await point. This will cause any subsequent reads or writes to fail while the await is pending." },
+  { path = "dioxus_signals::WriteLock", allow-invalid = true, reason = "Signal write locks should not be held over an await point. This will cause deadlocks if the signal is accessed after the await." },
+  { path = "dioxus_signals::ReadLock", allow-invalid = true, reason = "Signal read locks should not be held over an await point. This will block any writes to the signal until the task resumes." },
 ]
+
+# UI components (RSX) can be complex, so we slightly increase the threshold for cognitive complexity.
+cognitive-complexity-threshold = 30
+
+# Require modern Rust for Dioxus 0.7 features (is_none_or requires 1.82).
+msrv = "1.82"

@@ -38,19 +38,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-      - name: Install wasm-pack
-        if: runner.os != 'Windows'
-        run: |
-          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-
-      - name: Install wasm-pack (Windows)
-        if: runner.os == 'Windows'
-        shell: powershell
-        run: iwr https://rustwasm.github.io/wasm-pack/installer/init.ps1 -useb | iex
-
-      - name: Install Dioxus CLI
-        run: |
-          curl -sSL http://dioxus.dev/install.sh | sh || true
+      - name: Install Tooling
+        uses: taiki-e/install-action@v2
+        with:
+          tool: dioxus-cli,wasm-pack
 
       - name: Check Formatting
         run: cargo fmt --all -- --check

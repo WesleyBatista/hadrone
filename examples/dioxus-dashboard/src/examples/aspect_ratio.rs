@@ -110,7 +110,7 @@ fn default_layout() -> Vec<LayoutItem> {
 
 #[component]
 pub fn AspectRatioExample() -> Element {
-    let layout = use_signal(|| default_layout());
+    let layout = use_signal(default_layout);
 
     rsx! {
         div { class: "example-content",

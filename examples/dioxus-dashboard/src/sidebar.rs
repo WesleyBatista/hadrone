@@ -58,7 +58,7 @@ pub fn Sidebar(
                     SidebarNavItem {
                         item: item.clone(),
                         is_active: active_route == item.route,
-                        on_toggle: on_toggle.clone()
+                        on_toggle: on_toggle
                     }
                 }
 
@@ -69,7 +69,7 @@ pub fn Sidebar(
                         SidebarNavItem {
                             item: item.clone(),
                             is_active: active_route == item.route,
-                            on_toggle: on_toggle.clone()
+                            on_toggle: on_toggle
                         }
                     }
                 }

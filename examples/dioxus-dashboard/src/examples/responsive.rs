@@ -83,7 +83,7 @@ fn default_layout() -> Vec<LayoutItem> {
 #[component]
 pub fn ResponsiveExample() -> Element {
     let mut cols = use_signal(|| 12);
-    let layout = use_signal(|| default_layout());
+    let layout = use_signal(default_layout);
 
     let current_cols = cols();
 

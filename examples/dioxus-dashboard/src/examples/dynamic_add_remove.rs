@@ -8,8 +8,8 @@ const ITEM_COLORS: [&str; 8] = [
 ];
 
 fn get_item_color(id: &str) -> String {
-    let idx = if id.starts_with('n') {
-        id[1..].parse::<usize>().unwrap_or(0) % 8
+    let idx = if let Some(rest) = id.strip_prefix('n') {
+        rest.parse::<usize>().unwrap_or(0) % 8
     } else {
         id.parse::<usize>().unwrap_or(0) % 8
     };
@@ -71,7 +71,7 @@ fn default_layout() -> Vec<LayoutItem> {
 
 #[component]
 pub fn DynamicAddRemoveExample() -> Element {
-    let mut layout = use_signal(|| default_layout());
+    let mut layout = use_signal(default_layout);
 
     rsx! {
         div { class: "example-content",

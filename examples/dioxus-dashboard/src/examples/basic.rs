@@ -25,7 +25,7 @@ fn default_layout() -> Vec<LayoutItem> {
 
 #[component]
 pub fn BasicExample() -> Element {
-    let mut layout = use_signal(|| default_layout());
+    let mut layout = use_signal(default_layout);
     let mut cols = use_signal(|| 12);
 
     let on_reset = move |_| {
