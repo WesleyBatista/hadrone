@@ -1,0 +1,15 @@
+[package]
+name = "web"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dioxus = { workspace = true, features = ["router", "fullstack"] }
+ui = { workspace = true }
+hadrone-core = { workspace = true }
+hadrone-dioxus = { workspace = true }
+hadrone-extras = { workspace = true, features = ["dioxus"] }
+
+[features]
+default = []
+web = ["dioxus/web"]

@@ -1,0 +1,19 @@
+[package]
+name = "hadrone-examples"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# This crate doesn't have its own source, it just defines examples
+
+[[example]]
+name = "leptos-dashboard"
+path = "leptos-runner.rs"
+
+[[example]]
+name = "yew-dashboard"
+path = "yew-runner.rs"
+
+[[example]]
+name = "vanilla-js"
+path = "vanilla-js-runner.rs"

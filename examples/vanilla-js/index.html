@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Grid Engine Debugger – Vanilla JS (WASM)</title>
+    <!-- Vendored copy: `python3 -m http.server` uses this folder as root, so ../../packages is outside the served tree -->
+    <link rel="stylesheet" href="assets/hadrone-dashboard.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230f172a'/%3E%3C/svg%3E">
+    <style>
+        /* Minimal additions not covered by shared dashboard CSS */
+        #grid {
+            position: relative;
+            width: 100%;
+            contain: layout;
+            touch-action: none;
+            user-select: none;
+        }
+        .grid-item-wrap {
+            position: absolute;
+            z-index: 1;
+            pointer-events: auto;
+        }
+        .grid-item-wrap.dragging { z-index: 100; }
+        .grid-item-wrap.dragging .hadrone-widget { box-shadow: 0 20px 40px -8px rgba(0,0,0,0.2); transform: scale(1.025); }
+        .resize-handle {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 30px;
+            height: 30px;
+            cursor: nwse-resize;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .grid-item-wrap:hover .resize-handle { opacity: 1; }
+        .grid-item-wrap.dragging .resize-handle { opacity: 0 !important; }
+    </style>
+</head>
+<body>
+    <div class="hadrone-dashboard">
+        <header class="hadrone-dashboard__header">
+            <div class="hadrone-dashboard__title-block">
+                <h1 class="hadrone-dashboard__title">Grid Engine Debugger</h1>
+                <p class="hadrone-dashboard__subtitle">
+                    Vanilla JS (WASM) build: same layout engine as the web package. Responsive breakpoints adjust columns, row height, and margins. Layout can be saved to localStorage.
+                </p>
+                <div class="hadrone-dashboard__meta" id="meta-row">
+                    <span>Platform: Vanilla JS (WASM)</span>
+                    <span class="hadrone-dashboard__meta-sep">•</span>
+                    <span id="bp-name">BP: —</span>
+                    <span class="hadrone-dashboard__meta-sep">•</span>
+                    <span id="meta-cols">Cols: —</span>
+                    <span class="hadrone-dashboard__meta-sep">•</span>
+                    <span id="meta-rowh">Row: —</span>
+                    <span class="hadrone-dashboard__meta-sep">•</span>
+                    <span id="meta-gap">Gap: —</span>
+                </div>
+            </div>
+            <div class="hadrone-dashboard__controls">
+                <div class="hadrone-dashboard__field">
+                    <label class="hadrone-dashboard__label" for="col-slider">Manual grid columns</label>
+                    <input class="hadrone-dashboard__range" type="range" id="col-slider" min="1" max="24" value="12">
+                </div>
+                <button type="button" id="btn-add" class="hadrone-dashboard__btn-primary" style="background:#2563eb;">Add widget</button>
+                <button type="button" id="btn-clear" class="hadrone-dashboard__btn-primary" style="background:white;color:#ef4444;border:1px solid #ef4444;">Clear</button>
+                <button type="button" id="btn-save" class="hadrone-dashboard__btn-primary">Save layout</button>
+            </div>
+        </header>
+
+        <div class="hadrone-dashboard__grid-panel">
+            <div id="grid" class="hadrone-container" aria-label="Draggable grid layout"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import init, { GridEngineWasm } from './pkg/hadrone_wasm.js';
+
+        /** Same breakpoints as packages/web home.rs (`use_responsive_grid`) */
+        const CONFIG = [
+            { name: "mobile",  cols: 4,  minWidth: 0,    margin: [10, 10], rowHeight: 80 },
+            { name: "tablet",  cols: 8,  minWidth: 640, margin: [15, 15], rowHeight: 90 },
+            { name: "desktop", cols: 12, minWidth: 1024, margin: [20, 20], rowHeight: 100 },
+        ];
+
+        const DEFAULT_HANDLES = ["SouthEast", "South", "East"];
+
+        function defaultLayout() {
+            return [
+                { id: "1", x: 0, y: 0, w: 4, h: 2, resize_handles: [...DEFAULT_HANDLES] },
+                { id: "2", x: 4, y: 0, w: 4, h: 4, aspect_ratio: 1.0, resize_handles: [...DEFAULT_HANDLES] },
+                { id: "3", x: 2, y: 2, w: 2, h: 2, resize_handles: [...DEFAULT_HANDLES] },
+            ];
+        }
+
+        function normalizeItem(raw) {
+            const it = raw && typeof raw === "object" ? raw : {};
+            return {
+                id: String(it.id ?? "w"),
+                x: Number(it.x) || 0,
+                y: Number(it.y) || 0,
+                w: Number(it.w) || 1,
+                h: Number(it.h) || 1,
+                min_w: it.min_w ?? null,
+                max_w: it.max_w ?? null,
+                min_h: it.min_h ?? null,
+                max_h: it.max_h ?? null,
+                aspect_ratio: it.aspect_ratio != null ? Number(it.aspect_ratio) : null,
+                is_static: Boolean(it.is_static),
+                is_draggable: it.is_draggable !== false,
+                is_resizable: it.is_resizable !== false,
+                resize_handles: Array.isArray(it.resize_handles) && it.resize_handles.length
+                    ? it.resize_handles
+                    : [...DEFAULT_HANDLES],
+            };
+        }
+
+        function pickBreakpoint(width) {
+            let best = CONFIG[0];
+            for (const c of CONFIG) {
+                if (width >= c.minWidth && c.minWidth >= best.minWidth) best = c;
+            }
+            return best;
+        }
+
+        async function run() {
+            await init();
+
+            const STORAGE_KEY = "hadrone-vanilla-v1";
+            const grid = document.getElementById("grid");
+            const colSlider = document.getElementById("col-slider");
+
+            let manualCols = null;
+            let currentBP = pickBreakpoint(window.innerWidth);
+            let currentLayout = [];
+            let engine = null;
+
+            function effectiveCols() {
+                return manualCols ?? currentBP.cols;
+            }
+
+            function colWidthPx() {
+                const cols = effectiveCols();
+                const w = grid.clientWidth;
+                return cols > 0 ? w / cols : 0;
+            }
+
+            function itemRect(item) {
+                const cw = colWidthPx();
+                const mx = currentBP.margin[0];
+                const my = currentBP.margin[1];
+                const rh = currentBP.rowHeight;
+                return {
+                    left: item.x * cw,
+                    top: item.y * (rh + my),
+                    width: item.w * cw - mx,
+                    height: item.h * rh + (item.h - 1) * my,
+                };
+            }
+
+            function updateMeta() {
+                const bp = pickBreakpoint(window.innerWidth);
+                currentBP = bp;
+                const cols = effectiveCols();
+                const m = bp.margin;
+                document.getElementById("bp-name").textContent = `BP: ${bp.name}`;
+                document.getElementById("meta-cols").textContent = `Cols: ${cols}`;
+                document.getElementById("meta-rowh").textContent = `Row: ${bp.rowHeight}px`;
+                document.getElementById("meta-gap").textContent = `Gap: ${m[0]}×${m[1]}px`;
+            }
+
+            /**
+             * Keep the WASM engine layout in sync with `currentLayout` (same as web GridLayout compaction).
+             * Without this, `start_interaction` finds no items and the first `update_interaction` returns an empty layout.
+             */
+            function syncEngineFromLayout() {
+                updateMeta();
+                const cols = effectiveCols();
+                const eng = new GridEngineWasm(cols, "Gravity");
+                try {
+                    const normalized = currentLayout.map(normalizeItem);
+                    eng.set_layout(normalized);
+                    currentLayout = eng.get_layout();
+                } catch (e) {
+                    console.error("set_layout failed, using defaults:", e);
+                    currentLayout = defaultLayout();
+                    eng.set_layout(currentLayout.map(normalizeItem));
+                    currentLayout = eng.get_layout();
+                }
+                engine = eng;
+            }
+
+            function render() {
+                if (!grid.clientWidth) {
+                    requestAnimationFrame(render);
+                    return;
+                }
+                updateMeta();
+                syncEngineFromLayout();
+
+                grid.innerHTML = "";
+                let maxBottom = 400;
+
+                for (const item of currentLayout) {
+                    const { left, top, width, height } = itemRect(item);
+                    if (top + height > maxBottom) maxBottom = top + height;
+
+                    const wrap = document.createElement("div");
+                    wrap.className = "grid-item-wrap";
+                    wrap.dataset.id = item.id;
+                    wrap.style.cssText = `left:${left}px;top:${top}px;width:${width}px;height:${height}px;`;
+
+                    const aspectBadge =
+                        item.aspect_ratio != null
+                            ? `<span class="hadrone-widget__badge">ASPECT</span>`
+                            : "";
+
+                    wrap.innerHTML = `
+                        <div class="hadrone-widget" style="width:100%;height:100%;">
+                            <div class="hadrone-widget__chrome">
+                                <span>WIDGET ${String(item.id).toUpperCase()}</span>
+                                ${aspectBadge}
+                            </div>
+                            <div class="hadrone-widget__body">
+                                <div class="hadrone-widget__stats">
+                                    <div>LOC: ${item.x},${item.y}</div>
+                                    <div>DIM: ${item.w}×${item.h}</div>
+                                </div>
+                                <div class="hadrone-widget__placeholder">Focus widget • arrows N/A in vanilla</div>
+                            </div>
+                        </div>
+                        <div class="resize-handle" tabindex="0" role="button" aria-label="Resize">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="#94a3b8">
+                                <path d="M11 1 L11 11 L1 11 Z"/>
+                            </svg>
+                        </div>`;
+
+                    const handleInteraction = (e, type, handleName = "") => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        syncEngineFromLayout();
+                        const live = currentLayout.find((i) => i.id === item.id);
+                        if (!live) return;
+                        const cw = colWidthPx();
+                        if (cw <= 0) return;
+                        const m = currentBP.margin[0];
+                        const my = currentBP.margin[1];
+                        engine.start_interaction(
+                            live.id,
+                            type,
+                            handleName,
+                            e.clientX,
+                            e.clientY,
+                            cw,
+                            currentBP.rowHeight,
+                            m,
+                            my,
+                            0,
+                            0
+                        );
+
+                        wrap.classList.add("dragging");
+                        wrap.setPointerCapture(e.pointerId);
+
+                        const startRect = itemRect(live);
+
+                        const onMove = (me) => {
+                            const updated = engine.update_interaction(me.clientX, me.clientY);
+                            if (Array.isArray(updated) && updated.length > 0) {
+                                currentLayout = updated;
+                            }
+                            const dx = me.clientX - e.clientX;
+                            const dy = me.clientY - e.clientY;
+                            if (type === "Drag") {
+                                wrap.style.left = startRect.left + dx + "px";
+                                wrap.style.top = startRect.top + dy + "px";
+                            } else {
+                                wrap.style.width = startRect.width + dx + "px";
+                                wrap.style.height = startRect.height + dy + "px";
+                            }
+                            renderOthers(live.id);
+                        };
+
+                        const onUp = (ue) => {
+                            engine.end_interaction(ue.clientX, ue.clientY);
+                            currentLayout = engine.get_layout();
+                            wrap.classList.remove("dragging");
+                            window.removeEventListener("pointermove", onMove);
+                            window.removeEventListener("pointerup", onUp);
+                            render();
+                        };
+
+                        window.addEventListener("pointermove", onMove);
+                        window.addEventListener("pointerup", onUp);
+                    };
+
+                    wrap.querySelector(".hadrone-widget__chrome").addEventListener("pointerdown", (e) =>
+                        handleInteraction(e, "Drag")
+                    );
+                    wrap.querySelector(".resize-handle").addEventListener("pointerdown", (e) =>
+                        handleInteraction(e, "Resize", "SouthEast")
+                    );
+
+                    grid.appendChild(wrap);
+                }
+
+                grid.style.height = maxBottom + currentBP.margin[1] + "px";
+                colSlider.value = String(effectiveCols());
+            }
+
+            function renderOthers(activeId) {
+                for (const it of currentLayout) {
+                    if (it.id === activeId) continue;
+                    const el = grid.querySelector(`[data-id="${CSS.escape(it.id)}"]`);
+                    if (!el) continue;
+                    const r = itemRect(it);
+                    el.style.left = r.left + "px";
+                    el.style.top = r.top + "px";
+                    el.style.width = r.width + "px";
+                    el.style.height = r.height + "px";
+                }
+            }
+
+            colSlider.addEventListener("input", (e) => {
+                manualCols = parseInt(e.target.value, 10);
+                render();
+            });
+
+            document.getElementById("btn-add").addEventListener("click", () => {
+                const newId = `w${currentLayout.length + 1}`;
+                currentLayout = [
+                    ...currentLayout,
+                    { id: newId, x: 0, y: 0, w: 2, h: 2, resize_handles: [...DEFAULT_HANDLES] },
+                ];
+                render();
+            });
+
+            document.getElementById("btn-clear").addEventListener("click", () => {
+                currentLayout = [];
+                render();
+            });
+
+            document.getElementById("btn-save").addEventListener("click", () => {
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify({
+                        version: 1,
+                        items: currentLayout,
+                        cols: manualCols,
+                    })
+                );
+            });
+
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const snap = JSON.parse(saved);
+                    if (snap.items && Array.isArray(snap.items)) {
+                        currentLayout = snap.items.map(normalizeItem);
+                    }
+                    if (snap.cols != null) {
+                        manualCols = snap.cols;
+                        colSlider.value = String(snap.cols);
+                    }
+                } catch (_) {
+                    currentLayout = defaultLayout();
+                }
+            } else {
+                currentLayout = defaultLayout();
+            }
+
+            render();
+            window.addEventListener("resize", () => render());
+        }
+
+        run().catch((err) => {
+            console.error(err);
+            document.getElementById("grid").innerHTML =
+                '<p style="padding:16px;color:#b91c1c;">WASM failed to load. Run <code>cargo run -p vanilla-js-runner</code> from the repo, then serve this folder (e.g. <code>python3 -m http.server 8083</code>) and open <code>http://localhost:8083</code>.</p>';
+        });
+    </script>
+</body>
+</html>

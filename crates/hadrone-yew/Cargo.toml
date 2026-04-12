@@ -1,0 +1,23 @@
+[package]
+name = "hadrone-yew"
+version = "0.1.0"
+edition = "2021"
+description = "Yew bindings for hadrone grid layout engine"
+license = "MIT OR Apache-2.0"
+readme = "../../README.md"
+repository = "https://github.com/wesleybatista/hadrone"
+documentation = "https://docs.rs/hadrone-yew"
+keywords = ["yew", "grid", "layout"]
+categories = ["rendering", "web-programming"]
+publish = false
+
+[dependencies]
+yew = { version = "0.21", features = ["csr"] }
+hadrone-core = { path = "../hadrone-core" }
+gloo-events = "0.2"
+web-sys = { version = "0.3", features = [
+    "Window",
+    "Document",
+    "Element",
+    "HtmlElement",
+] }

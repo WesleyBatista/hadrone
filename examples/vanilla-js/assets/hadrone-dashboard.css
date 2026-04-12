@@ -1,0 +1,203 @@
+/* Mirrored from packages/ui/assets/styling/hadrone-dashboard.css — keep in sync for vanilla demo */
+/* Shared dashboard shell for web + desktop Hadrone demos */
+
+:root {
+  --hd-bg: #f1f5f9;
+  --hd-surface: #ffffff;
+  --hd-text: #1e293b;
+  --hd-muted: #64748b;
+  --hd-border: #e2e8f0;
+  --hd-accent: #0f172a;
+  --hd-accent-btn: #2563eb;
+  --hd-radius: 12px;
+  --hd-radius-lg: 16px;
+  --hd-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --hd-shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.hadrone-dashboard {
+  padding: 24px;
+  background: var(--hd-bg);
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--hd-text);
+  box-sizing: border-box;
+}
+
+.hadrone-dashboard *,
+.hadrone-dashboard *::before,
+.hadrone-dashboard *::after {
+  box-sizing: inherit;
+}
+
+.hadrone-dashboard__header {
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: var(--hd-surface);
+  padding: 20px;
+  border-radius: var(--hd-radius);
+  box-shadow: var(--hd-shadow);
+}
+
+.hadrone-dashboard__title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hadrone-dashboard__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--hd-text);
+}
+
+.hadrone-dashboard__subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--hd-muted);
+  max-width: 42rem;
+  line-height: 1.45;
+}
+
+.hadrone-dashboard__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--hd-muted);
+}
+
+.hadrone-dashboard__meta-sep {
+  opacity: 0.5;
+}
+
+.hadrone-dashboard__controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.hadrone-dashboard__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hadrone-dashboard__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hadrone-dashboard__range {
+  width: min(200px, 50vw);
+  cursor: pointer;
+}
+
+.hadrone-dashboard__btn-primary {
+  padding: 10px 20px;
+  background: var(--hd-accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.hadrone-dashboard__btn-primary:hover {
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.hadrone-dashboard__btn-primary:focus-visible {
+  outline: 2px solid var(--hd-accent-btn);
+  outline-offset: 2px;
+}
+
+.hadrone-dashboard__grid-panel {
+  background: var(--hd-surface);
+  border-radius: var(--hd-radius-lg);
+  padding: 20px;
+  box-shadow: var(--hd-shadow-inset);
+  min-height: 600px;
+}
+
+/* Widget cards inside grid cells */
+.hadrone-widget {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--hd-surface);
+  border: 1px solid var(--hd-border);
+  border-radius: var(--hd-radius);
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08);
+}
+
+.hadrone-widget__chrome {
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--hd-border);
+  cursor: grab;
+  font-weight: 800;
+  color: var(--hd-text);
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.hadrone-widget__badge {
+  font-size: 10px;
+  background: #eff6ff;
+  color: #1e40af;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.hadrone-widget__body {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.hadrone-widget__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: var(--hd-muted);
+}
+
+.hadrone-widget__placeholder {
+  flex: 1;
+  min-height: 0;
+  background: var(--hd-bg);
+  border: 1px solid var(--hd-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}

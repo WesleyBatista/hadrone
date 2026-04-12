@@ -1,0 +1,26 @@
+[workspace]
+resolver = "2"
+members = [
+    "packages/ui",
+    "packages/web",
+    "packages/desktop",
+    "crates/hadrone-core",
+    "crates/hadrone-dioxus",
+    "crates/hadrone-leptos",
+    "crates/hadrone-yew",
+    "crates/hadrone-wasm",
+    "crates/hadrone-extras",
+    "examples",
+    "examples/dioxus-dashboard",
+    "examples/leptos-dashboard",
+    "examples/yew-dashboard",
+]
+
+[workspace.dependencies]
+dioxus = { version = "0.7.1", features = ["router"] }
+
+# workspace
+ui = { path = "packages/ui" }
+hadrone-core = { path = "crates/hadrone-core" }
+hadrone-dioxus = { path = "crates/hadrone-dioxus" }
+hadrone-extras = { path = "crates/hadrone-extras" }

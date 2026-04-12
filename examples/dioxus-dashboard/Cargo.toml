@@ -1,0 +1,12 @@
+[package]
+name = "dioxus-dashboard"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dioxus = { workspace = true, features = ["desktop", "router"] }
+ui = { workspace = true }
+hadrone-core = { path = "../../crates/hadrone-core" }
+hadrone-dioxus = { path = "../../crates/hadrone-dioxus" }
+hadrone-extras = { path = "../../crates/hadrone-extras", features = ["dioxus"] }
+serde = { version = "1.0", features = ["derive"] }

@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build_and_test:
+    name: Build & Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: wasm32-unknown-unknown
+        components: clippy, rustfmt
+
+    - name: Cache Cargo Dependencies
+      uses: swatinem/rust-cache@v2
+
+    - name: Install System Dependencies (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+    - name: Install wasm-pack
+      shell: bash
+      run: |
+        if [[ "${{ runner.os }}" == "Windows" ]]; then
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -y
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        else
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+        fi
+
+    - name: Install Dioxus CLI
+      shell: bash
+      run: |
+        if [[ "${{ runner.os }}" == "Windows" ]]; then
+          powershell -Command "iwr -useb https://dioxus.dev/install.ps1 | iex"
+        else
+          curl -sSL http://dioxus.dev/install.sh | sh
+        fi
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Check Formatting
+      run: cargo fmt --all -- --check
+
+    - name: Clippy
+      run: cargo clippy --workspace -- -D warnings
+
+    - name: Run Tests
+      # We run tests on all platforms, but excluding WASM specific tests on non-wasm runners if any
+      run: cargo test --workspace
+
+    - name: Build WASM
+      run: wasm-pack build crates/hadrone-wasm --target web
+
+    - name: Dioxus Check
+      # dx check provides RSX-specific linting (per package; --workspace is not supported on current dx)
+      run: |
+        dx check -p web --platform web
+        dx check -p desktop --platform desktop
+        dx check -p dioxus-dashboard --platform desktop
+
+    - name: Verify Examples
+      run: cargo check --examples

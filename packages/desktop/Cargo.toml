@@ -1,0 +1,15 @@
+[package]
+name = "desktop"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dioxus = { workspace = true, features = ["desktop"] }
+ui = { workspace = true }
+hadrone-core = { workspace = true }
+hadrone-dioxus = { workspace = true }
+hadrone-extras = { workspace = true }
+
+[features]
+default = []
+desktop = ["dioxus/desktop"]
