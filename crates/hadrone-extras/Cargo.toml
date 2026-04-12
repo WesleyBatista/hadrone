@@ -9,7 +9,6 @@ repository = "https://github.com/wesleybatista/hadrone"
 documentation = "https://docs.rs/hadrone-extras"
 keywords = ["storage", "breakpoints", "layout"]
 categories = ["development-tools"]
-publish = false
 
 [dependencies]
 hadrone-core = { path = "../hadrone-core" }

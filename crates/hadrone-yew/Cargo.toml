@@ -9,7 +9,6 @@ repository = "https://github.com/wesleybatista/hadrone"
 documentation = "https://docs.rs/hadrone-yew"
 keywords = ["yew", "grid", "layout"]
 categories = ["rendering", "web-programming"]
-publish = false
 
 [dependencies]
 yew = { version = "0.21", features = ["csr"] }

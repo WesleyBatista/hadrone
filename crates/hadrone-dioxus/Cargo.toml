@@ -9,7 +9,6 @@ repository = "https://github.com/wesleybatista/hadrone"
 documentation = "https://docs.rs/hadrone-dioxus"
 keywords = ["dioxus", "grid", "layout"]
 categories = ["rendering", "web-programming"]
-publish = false
 
 [dependencies]
 dioxus = { workspace = true, features = ["html"] }

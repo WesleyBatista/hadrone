@@ -9,7 +9,6 @@ repository = "https://github.com/wesleybatista/hadrone"
 documentation = "https://docs.rs/hadrone-wasm"
 keywords = ["wasm", "wasm-bindgen", "layout"]
 categories = ["wasm", "rendering"]
-publish = false
 
 [lib]
 crate-type = ["cdylib", "rlib"]
