@@ -1,6 +1,5 @@
 [package]
 name = "hadrone-leptos"
-publish = false
 version = "0.1.0"
 edition = "2021"
 description = "Leptos bindings for hadrone grid layout engine"
@@ -13,7 +12,7 @@ categories = ["rendering", "web-programming"]
 
 [dependencies]
 leptos = { version = "0.6", features = ["csr"] }
-hadrone-core = "0.1.1"
+hadrone-core = "0.1.0"
 web-sys = { version = "0.3", features = [
     "Window",
     "Document",
