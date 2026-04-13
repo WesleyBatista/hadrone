@@ -944,7 +944,7 @@ dependencies = [
 
 [[package]]
 name = "desktop"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "dioxus",
  "hadrone-core",
@@ -1083,7 +1083,7 @@ checksum = "b99d7d199aad72431b549759550002e7d72c8a257eba500dca9fbdb2122de103"
 
 [[package]]
 name = "dioxus-dashboard"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "dioxus",
  "hadrone-core",
@@ -1760,7 +1760,7 @@ dependencies = [
 
 [[package]]
 name = "example-leptos"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "hadrone-core",
  "hadrone-leptos",
@@ -1769,7 +1769,7 @@ dependencies = [
 
 [[package]]
 name = "example-yew"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "hadrone-core",
  "hadrone-yew",
@@ -2709,7 +2709,7 @@ dependencies = [
 
 [[package]]
 name = "hadrone-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "proptest",
  "serde",
@@ -2717,7 +2717,7 @@ dependencies = [
 
 [[package]]
 name = "hadrone-dioxus"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "dioxus",
  "hadrone-core",
@@ -2731,11 +2731,11 @@ dependencies = [
 
 [[package]]
 name = "hadrone-examples"
-version = "0.1.0"
+version = "0.1.1"
 
 [[package]]
 name = "hadrone-extras"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "dioxus",
  "gloo-timers 0.3.0",
@@ -2750,7 +2750,7 @@ dependencies = [
 
 [[package]]
 name = "hadrone-leptos"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "hadrone-core",
  "leptos",
@@ -2759,7 +2759,7 @@ dependencies = [
 
 [[package]]
 name = "hadrone-wasm"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "hadrone-core",
  "serde",
@@ -2769,7 +2769,7 @@ dependencies = [
 
 [[package]]
 name = "hadrone-yew"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "gloo-events 0.2.0",
  "hadrone-core",
@@ -6323,7 +6323,7 @@ checksum = "562d481066bde0658276a35467c4af00bdc6ee726305698a55b86e61d7ad82bb"
 
 [[package]]
 name = "ui"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "dioxus",
 ]
@@ -6607,7 +6607,7 @@ dependencies = [
 
 [[package]]
 name = "web"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "dioxus",
  "hadrone-core",
